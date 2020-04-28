@@ -3,7 +3,7 @@ OBJS=cpp.o debug.o dict.o gen.o lex.o list.o parse.o string.o error.o
 SELF=cpp.s debug.s dict.s gen.s lex.s list.s parse.s string.s error.s main.s
 TESTS := $(patsubst %.c,%.bin,$(wildcard test/*.c))
 
-8cc: 8cc.h main.o $(OBJS)
+SmileyBASIC: 8cc.h main.o $(OBJS)
 	$(CC) -o $@ main.o $(OBJS) $(LDFLAGS)
 
 $(OBJS) utiltest.o main.o: 8cc.h
@@ -19,38 +19,38 @@ test: utiltest $(TESTS)
 	done
 	./test.sh
 
-test/%.o: test/%.c 8cc
-	./8cc -c $<
+test/%.o: test/%.c SmileyBASIC
+	./SmileyBASIC -c $<
 
-test/%.bin: test/%.o test/main/testmain.s 8cc
+test/%.bin: test/%.o test/main/testmain.s SmileyBASIC
 	$(CC) -o $@ $< test/main/testmain.o $(LDFLAGS)
 
-$(SELF) test/main/testmain.s: 8cc test/main/testmain.c
-	./8cc -c $(@:s=c)
+$(SELF) test/main/testmain.s: SmileyBASIC test/main/testmain.c
+	./SmileyBASIC -c $(@:s=c)
 
 self: $(SELF)
-	rm -f 8cc utiltest
-	$(MAKE) 8cc
+	rm -f SmileyBASIC utiltest
+	$(MAKE) SmileyBASIC
 
 fulltest:
 	$(MAKE) clean
 	$(MAKE) test
-	cp 8cc gen1
+	cp SmileyBASIC gen1
 	rm $(OBJS) main.o
 	$(MAKE) self
 	$(MAKE) test
-	cp 8cc gen2
+	cp SmileyBASIC gen2
 	rm $(OBJS) main.o
 	$(MAKE) self
 	$(MAKE) test
-	cp 8cc gen3
+	cp SmileyBASIC gen3
 	diff gen2 gen3
 
 clean:
-	rm -f 8cc *.o *.s tmp.* test/*.s test/*.o sample/*.o
+	rm -f SmileyBASIC *.o *.s tmp.* test/*.s test/*.o sample/*.o
 	rm -f utiltest gen[1-9] test/util/testmain.[os]
 	rm -f $(TESTS)
 
-all: 8cc
+all: SmileyBASIC
 
 .PHONY: clean test all
